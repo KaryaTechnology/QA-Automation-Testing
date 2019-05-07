@@ -12,49 +12,38 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import seleniumgluecode.test;
+public class WebLibrary implements LibraryInterface {
 
-public class WebLibrary {
-	//ST
+	protected static boolean booHighliteFlag = true;
+	protected static WebDriver webDriver;
+	static WebLibrary webLibInstance = null;
+
 	private WebLibrary() {
 	}
-	// ST
-	public static WebLibrary webLibaray = new WebLibrary();
-	// ST
+
 	public static WebLibrary getWebLibrary() {
-		return webLibaray;
+		if (webLibInstance == null)
+			webLibInstance = new WebLibrary();
+		return webLibInstance;
 	}
 
-	public static boolean booHighliteFlag = true;
-	public static WebDriver webDriver;
-
-	@SuppressWarnings("unused")
-	private String BasePath()  {
-		
-		String strBasepath = null;
+	// Need to change the path
+	protected static void launchBrowser(String URL) {
 		try {
-			File Directory = new File(".");
-			strBasepath = Directory.getAbsolutePath();
-			test.strBasepath = strBasepath;
-		} catch (Exception e) {
+			File file = new File(".");
+			System.setProperty("webdriver.chrome.driver",
+					file.getCanonicalPath() + "\\DependentFiles\\chromedriver.exe");
+			webDriver = new ChromeDriver();
+			webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+			webDriver.manage().window().maximize();
+			webDriver.get(URL);
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return strBasepath;
 	}
 
-	@SuppressWarnings("unused")
-	private static void launchBrowser(String URL) {
-		File file = new File(".");
-		System.out.println(file.getAbsolutePath());
-		System.setProperty("webdriver.chrome.driver", "D:/Automation/Driver/chromedriver.exe");
-		webDriver = new ChromeDriver();
-		webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-		webDriver.manage().window().maximize();
-		webDriver.get(URL);
-	}
-
-	private static WebElement getWebElement(String... Locator) throws Exception {
+	protected static WebElement getWebElement(String... Locator) throws Exception {
 
 		WebElement element = null;
 
@@ -89,9 +78,6 @@ public class WebLibrary {
 				element = (WebElement) ((JavascriptExecutor) webDriver).executeScript(Locator[0]);
 			}
 		} catch (Exception e) {
-			// reportResults("Web element should be exists", "Web element is not
-			// exists", "Fail");
-			// e.printStackTrace();
 			String msg = "";
 			if (Locator.length > 1) {
 				msg = Locator[1];
@@ -103,7 +89,7 @@ public class WebLibrary {
 		return element;
 	}
 
-	private static void HighlightMyElement(WebElement element) throws InterruptedException {
+	protected static void HighlightMyElement(WebElement element) throws InterruptedException {
 		if (booHighliteFlag) {
 			for (int i = 0; i < 10; i++) {
 				JavascriptExecutor javascript = (JavascriptExecutor) webDriver;
@@ -121,7 +107,7 @@ public class WebLibrary {
 
 	}
 
-	private static void waitForStartPageloade() throws InterruptedException {
+	protected static void waitForStartPageloade() throws InterruptedException {
 
 		try {
 			Thread.sleep(2000);
@@ -145,7 +131,7 @@ public class WebLibrary {
 
 	}
 
-	private static void waitForPageLoad() throws InterruptedException {
+	protected static void waitForPageLoad() throws InterruptedException {
 
 		try {
 			Thread.sleep(2000);
@@ -167,4 +153,13 @@ public class WebLibrary {
 		}
 
 	}
+
+	public static void main(String[] args) throws InterruptedException {
+		launchBrowser("https://www.softwaretestingmaterial.com/extent-reports-selenium-version-4/");
+
+		Thread.sleep(2000);
+
+		//webDriver.quit();
+	}
+
 }
