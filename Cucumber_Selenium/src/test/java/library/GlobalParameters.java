@@ -5,9 +5,13 @@ import java.io.File;
 public class GlobalParameters {
 
 	public static String strSetReportLocation = "DESK";
+	protected static boolean booHighliteFlag = true;
+	public static boolean boolScreenShortForEachStep = true;
 	public static String strChromeDriverLocation = "";
 	public static String strBasePath = "";
 	public static String strTestCaseId = "TestCaseID";
+	public static String strPageName = "";
+	public static String strModuleName = "";
 
 	public static String BasePath() {
 

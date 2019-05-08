@@ -32,14 +32,14 @@ public class ReportLibrary {
 	/********************************************
 	 * Report Initialization
 	 ********************************************/
-	protected static void createReport() {
+	protected void createReport() {
 
 		Date date = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
 		String strTimeStamp = dateFormat.format(date).toString();
 
-		String report_location = reportLocation + "\\Vertex-Report_" + GlobalParameters.strTestCaseId +"_"+ strTimeStamp
-				+ ".html";
+		String report_location = reportLocation + "\\Vertex-Report_" + GlobalParameters.strTestCaseId + "_"
+				+ strTimeStamp + ".html";
 
 		System.out.println("Report File Location : " + report_location);
 
@@ -62,14 +62,14 @@ public class ReportLibrary {
 	/********************************************
 	 * Module Start
 	 ********************************************/
-	protected static void startTest(String moduletName) {
+	protected void startTest(String moduletName) {
 		logger = report.createTest(moduletName);
 	}
 
 	/********************************************
 	 * Log steps to report Info Pass Fail
 	 ********************************************/
-	protected static void logReportStepsStatus(String Expected, String Actual, String status, String screenshotPath) {
+	protected void logReportStepsStatus(String Expected, String Actual, String status, String screenshotPath) {
 
 		try {
 			if (!screenshotPath.equalsIgnoreCase("")) {
@@ -143,7 +143,7 @@ public class ReportLibrary {
 	/********************************************
 	 * Take screenshot returns the location
 	 ********************************************/
-	protected static String getScreenShot(WebDriver driver, String screenshotName) throws IOException {
+	protected String getScreenShot(WebDriver driver, String screenshotName) throws IOException {
 		String dateName = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
 		TakesScreenshot ts = (TakesScreenshot) driver;
 		File source = ts.getScreenshotAs(OutputType.FILE);

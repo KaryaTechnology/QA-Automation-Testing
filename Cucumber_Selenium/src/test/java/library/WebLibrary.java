@@ -14,32 +14,41 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class WebLibrary implements LibraryInterface {
 
-	protected static boolean booHighliteFlag = true;
 	protected static WebDriver webDriver;
 	static WebLibrary webLibInstance = null;
 
 	// Need to change the path
 	protected static void launchBrowser(String URL) {
 		try {
+			_reportLibInterface.createReport();
+			_reportLibInterface.startTest("Launch Application");
+			
 			File file = new File(".");
+			
 			System.setProperty("webdriver.chrome.driver",
 					file.getCanonicalPath() + "\\DependentFiles\\chromedriver.exe");
+			
 			webDriver = new ChromeDriver();
 			webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 			webDriver.manage().window().maximize();
+			logReport("Browser should be launched", "Browser is launched successfully", "Pass", false);
+			
 			webDriver.get(URL);
+			logReport("The application should be launched", "The application is opened successfully", "pass", false);
 		} catch (IOException e) {
+			_reportLibInterface.logReportStepsStatus("Browser to be launched and application to be loaded",
+					"Browser Didnot launch " + e.toString(), "error", "");
 			e.printStackTrace();
 		}
 	}
 
+	// Find the object
 	protected static WebElement getWebElement(String... Locator) throws Exception {
 
 		WebElement element = null;
 
-		WebDriverWait wait = new WebDriverWait(webDriver, 15);
 		try {
-
+			WebDriverWait wait = new WebDriverWait(webDriver, 15);
 			if (Locator[0].startsWith("css=")) {
 				Locator[0] = Locator[0].substring(4);
 				wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(Locator[0])));
@@ -72,7 +81,12 @@ public class WebLibrary implements LibraryInterface {
 			String msg = "";
 			if (Locator.length > 1) {
 				msg = Locator[1];
+				System.out.println("Object not found locator :" + msg);
 			}
+			System.out.println("Object not found locator :" + Locator[0]);
+			_reportLibInterface.logReportStepsStatus("Object is to be found", "Object is not found : " + Locator[0],
+					"Error",
+					_reportLibInterface.getScreenShot(webDriver, "Objectnot Found in " + GlobalParameters.strPageName));
 		}
 
 		HighlightMyElement(element);
@@ -80,8 +94,9 @@ public class WebLibrary implements LibraryInterface {
 		return element;
 	}
 
+	// Highlight the element
 	protected static void HighlightMyElement(WebElement element) throws InterruptedException {
-		if (booHighliteFlag) {
+		if (GlobalParameters.booHighliteFlag) {
 			for (int i = 0; i < 10; i++) {
 				JavascriptExecutor javascript = (JavascriptExecutor) webDriver;
 				javascript.executeScript("arguments[0].setAttribute('style', arguments[1]);", element,
@@ -98,6 +113,7 @@ public class WebLibrary implements LibraryInterface {
 
 	}
 
+	// Waits for start page to load
 	protected static void waitForStartPageloade() throws InterruptedException {
 
 		try {
@@ -118,10 +134,13 @@ public class WebLibrary implements LibraryInterface {
 		} catch (Exception e) {
 			System.out.println(
 					"Page Loading waitForStartPageloade() is complete or might be an exception on Page Loading");
+			logReport("waitForStartPageloade() method called the page is loading",
+					"Error while loading page : " + e.toString(), "Error", true);
 		}
 
 	}
 
+	// Waits for page to load
 	protected static void waitForPageLoad() throws InterruptedException {
 
 		try {
@@ -141,11 +160,88 @@ public class WebLibrary implements LibraryInterface {
 		} catch (Exception e) {
 			System.out.println(
 					"Page Loading waitForStartPageloade() is complete or might be an exception on Page Loading");
+			logReport("waitForPageLoad() method called the page is loading",
+					"Error while loading page : " + e.toString(), "Error", true);
 		}
 
 	}
 
-	protected static void clickElement(String Locator, String nameOfObject) {
+	// Click on the object
+	protected static void clickElement(String nameOfObject, String locator, String action) {
+		if (!action.equalsIgnoreCase("")) {
+			try {
+
+				WebElement element = getWebElement(locator);
+				if (element.isDisplayed()) {
+					((JavascriptExecutor) webDriver).executeScript("arguments[0].click()", element);
+
+					logReport("The " + nameOfObject + " should be clicked",
+							"The " + nameOfObject + " is clicked sucussfilly", "Pass",
+							GlobalParameters.boolScreenShortForEachStep);
+				} else {
+					logReport("The " + nameOfObject + " should be clicked", "The " + nameOfObject + " is not clicked",
+							"Fail", true);
+				}
+			} catch (Exception e) {
+				logReport("The " + nameOfObject + " should be clicked",
+						"The " + nameOfObject + " element was not found : " + locator, "Error", true);
+			}
+		}
+	}
+
+	// Send key to a test field
+	protected static void sendKeyToElement(String nameOfObject, String locator, String value) {
+		if (!value.equalsIgnoreCase("")) {
+			try {
+				WebElement element = getWebElement(locator);
+				if (element.isDisplayed()) {
+					element.clear();
+					element.sendKeys(value);
+					logReport("Set the value \"" + value + "\" in the text box " + nameOfObject,
+							"The value \"" + value + "\" is set in the text box " + nameOfObject, "Pass",
+							GlobalParameters.boolScreenShortForEachStep);
+				} else {
+					logReport("Displays the test box " + nameOfObject + " in the page " + GlobalParameters.strPageName,
+							"The object " + nameOfObject + " is not presrnt in the page "
+									+ GlobalParameters.strPageName,
+							"Fail", true);
+				}
+			} catch (Exception e) {
+				logReport(
+						"The text box " + nameOfObject + " should be present in the page "
+								+ GlobalParameters.strPageName,
+						"The text box " + nameOfObject + " its locator : " + locator + " is not present in the page "
+								+ GlobalParameters.strPageName,
+						"Error", true);
+			}
+		}
+	}
+
+	// To log report steps
+	protected static void logReport(String Expected, String Actual, String Status, boolean takeScreenshort) {
+		try {
+			if (takeScreenshort) {
+				_reportLibInterface.logReportStepsStatus(Expected, Actual, Status, _reportLibInterface
+						.getScreenShot(webDriver, GlobalParameters.strPageName + GlobalParameters.strModuleName));
+			} else {
+				_reportLibInterface.logReportStepsStatus(Expected, Actual, Status, "");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+
+	// close chrome driver
+	protected static void endChromeDriver() throws IOException {
+		Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");
+	}
+
+	protected static void waitSeconds(int seconds) {
+		try {
+			Thread.sleep(seconds * 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private WebLibrary() {
@@ -158,10 +254,24 @@ public class WebLibrary implements LibraryInterface {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		launchBrowser("https://www.softwaretestingmaterial.com/extent-reports-selenium-version-4/");
+		launchBrowser("https://www.google.com/");
 
-		Thread.sleep(2000);
+		waitSeconds(2);
 
+		sendKeyToElement("Google search text box", "xpath=//input[@class='gLFyf gsfi']", "extent report");
+
+		waitSeconds(2);
+
+		clickElement("Click on Google Search", "xpath=//div[@class='FPdoLc VlcLAe']//input[@value='Google Search']",
+				"yes");
+		waitSeconds(10);
+		try {
+
+			endChromeDriver();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		// webDriver.quit();
 	}
 
