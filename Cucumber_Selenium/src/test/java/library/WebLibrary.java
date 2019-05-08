@@ -12,6 +12,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import pageObjectLocators.PageLocators;
+
 public class WebLibrary implements LibraryInterface {
 
 	protected static WebDriver webDriver;
@@ -22,17 +24,17 @@ public class WebLibrary implements LibraryInterface {
 		try {
 			_reportLibInterface.createReport();
 			_reportLibInterface.startTest("Launch Application");
-			
+
 			File file = new File(".");
-			
+
 			System.setProperty("webdriver.chrome.driver",
 					file.getCanonicalPath() + "\\DependentFiles\\chromedriver.exe");
-			
+
 			webDriver = new ChromeDriver();
 			webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 			webDriver.manage().window().maximize();
 			logReport("Browser should be launched", "Browser is launched successfully", "Pass", false);
-			
+
 			webDriver.get(URL);
 			logReport("The application should be launched", "The application is opened successfully", "pass", false);
 		} catch (IOException e) {
@@ -254,6 +256,7 @@ public class WebLibrary implements LibraryInterface {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
+
 		launchBrowser("https://www.google.com/");
 
 		waitSeconds(2);
