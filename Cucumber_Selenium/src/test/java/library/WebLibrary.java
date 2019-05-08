@@ -18,15 +18,6 @@ public class WebLibrary implements LibraryInterface {
 	protected static WebDriver webDriver;
 	static WebLibrary webLibInstance = null;
 
-	private WebLibrary() {
-	}
-
-	public static WebLibrary getWebLibrary() {
-		if (webLibInstance == null)
-			webLibInstance = new WebLibrary();
-		return webLibInstance;
-	}
-
 	// Need to change the path
 	protected static void launchBrowser(String URL) {
 		try {
@@ -38,7 +29,6 @@ public class WebLibrary implements LibraryInterface {
 			webDriver.manage().window().maximize();
 			webDriver.get(URL);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -78,6 +68,7 @@ public class WebLibrary implements LibraryInterface {
 				element = (WebElement) ((JavascriptExecutor) webDriver).executeScript(Locator[0]);
 			}
 		} catch (Exception e) {
+
 			String msg = "";
 			if (Locator.length > 1) {
 				msg = Locator[1];
@@ -154,12 +145,24 @@ public class WebLibrary implements LibraryInterface {
 
 	}
 
+	protected static void clickElement(String Locator, String nameOfObject) {
+	}
+
+	private WebLibrary() {
+	}
+
+	public static WebLibrary getWebLibrary() {
+		if (webLibInstance == null)
+			webLibInstance = new WebLibrary();
+		return webLibInstance;
+	}
+
 	public static void main(String[] args) throws InterruptedException {
 		launchBrowser("https://www.softwaretestingmaterial.com/extent-reports-selenium-version-4/");
 
 		Thread.sleep(2000);
 
-		//webDriver.quit();
+		// webDriver.quit();
 	}
 
 }
