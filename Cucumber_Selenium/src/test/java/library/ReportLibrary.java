@@ -61,7 +61,7 @@ public class ReportLibrary {
 	/********************************************
 	 * Module Start
 	 ********************************************/
-	protected void startTest(String moduletName) {
+	public void startTest(String moduletName) {
 		logger = report.createTest(moduletName);
 	}
 
@@ -142,7 +142,8 @@ public class ReportLibrary {
 	/********************************************
 	 * Take screenshot returns the location
 	 ********************************************/
-	protected String getScreenShot(WebDriver driver, String screenshotName) throws IOException {
+	protected String getScreenShot(WebDriver driver, String screenshotName) {
+
 		String dateName = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
 		TakesScreenshot ts = (TakesScreenshot) driver;
 		File source = ts.getScreenshotAs(OutputType.FILE);
@@ -153,7 +154,12 @@ public class ReportLibrary {
 		}
 		System.out.println("Screenshorts Location : " + destination);
 		File finalDestination = new File(destination);
-		FileUtils.copyFile(source, finalDestination);
+		try {
+			FileUtils.copyFile(source, finalDestination);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return destination;
 	}
 

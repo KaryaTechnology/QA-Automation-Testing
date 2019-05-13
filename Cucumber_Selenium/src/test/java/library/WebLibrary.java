@@ -2,6 +2,7 @@ package library;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -18,21 +19,20 @@ public class WebLibrary implements LibraryInterface {
 	static WebLibrary webLibInstance = null;
 
 	// Need to change the path
-	public static void launchBrowser(String URL) {
+	public void launchBrowser(String URL) {
 		try {
 			_reportLibInterface.createReport();
 			_reportLibInterface.startTest("Launch Application");
-			
+
 			File file = new File(".");
-			
-			System.setProperty("webdriver.chrome.driver",
-					file.getCanonicalPath() + "\\DependentFiles\\chromedriver.exe");
-			
+
+			System.setProperty("webdriver.chrome.driver", file.getCanonicalPath() + "\\Driver\\chromedriver.exe");
+
 			webDriver = new ChromeDriver();
-			webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+			webDriver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
 			webDriver.manage().window().maximize();
 			logReport("Browser should be launched", "Browser is launched successfully", "Pass", false);
-			
+
 			webDriver.get(URL);
 			logReport("The application should be launched", "The application is opened successfully", "pass", false);
 		} catch (IOException e) {
@@ -43,7 +43,7 @@ public class WebLibrary implements LibraryInterface {
 	}
 
 	// Find the object
-	protected static WebElement getWebElement(String... Locator) throws Exception {
+	public WebElement getWebElement(String... Locator) {
 
 		WebElement element = null;
 
@@ -94,8 +94,59 @@ public class WebLibrary implements LibraryInterface {
 		return element;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<WebElement> getWebElementsList(String... Locator) {
+
+		List<WebElement> element = null;
+		try {
+
+			WebDriverWait wait = new WebDriverWait(webDriver, 10);
+
+			if (Locator[0].startsWith("css=")) {
+				Locator[0] = Locator[0].substring(4);
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(Locator[0])));
+				element = webDriver.findElements(By.cssSelector(Locator[0]));
+			} else if (Locator[0].startsWith("id=")) {
+				Locator[0] = Locator[0].substring(3);
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(Locator[0])));
+				element = webDriver.findElements(By.id(Locator[0]));
+			} else if (Locator[0].startsWith("xpath=")) {
+				Locator[0] = Locator[0].substring(6);
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(Locator[0])));
+				element = webDriver.findElements(By.xpath(Locator[0]));
+			} else if (Locator[0].startsWith("name=")) {
+				Locator[0] = Locator[0].substring(5);
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.name(Locator[0])));
+				element = webDriver.findElements(By.name(Locator[0]));
+			} else if (Locator[0].startsWith("link=")) {
+				Locator[0] = Locator[0].substring(5);
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(Locator[0])));
+				element = webDriver.findElements(By.linkText(Locator[0]));
+			} else if (Locator[0].startsWith("class=")) {
+				Locator[0] = Locator[0].substring(6);
+				wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(Locator[0])));
+				element = webDriver.findElements(By.className(Locator[0]));
+			} else {
+				element = (List<WebElement>) ((JavascriptExecutor) webDriver).executeScript(Locator[0]);
+			}
+		} catch (Exception e) {
+
+			String msg = "";
+			if (Locator.length > 1) {
+				msg = Locator[1];
+				System.out.println("Object not found locator :" + msg);
+			}
+			System.out.println("Object not found locator :" + Locator[0]);
+			_reportLibInterface.logReportStepsStatus("Object is to be found", "Object is not found : " + Locator[0],
+					"Error",
+					_reportLibInterface.getScreenShot(webDriver, "Objectnot Found in " + GlobalParameters.strPageName));
+			return null;
+		}
+		return element;
+	}
+
 	// Highlight the element
-	protected static void HighlightMyElement(WebElement element) throws InterruptedException {
+	protected void HighlightMyElement(WebElement element) {
 		if (GlobalParameters.booHighliteFlag) {
 			for (int i = 0; i < 10; i++) {
 				JavascriptExecutor javascript = (JavascriptExecutor) webDriver;
@@ -107,67 +158,79 @@ public class WebLibrary implements LibraryInterface {
 						"color: yellow; border: 4px solid yellow;");
 				javascript.executeScript("arguments[0].setAttribute('style', arguments[1]);", element, "");
 			}
-			Thread.sleep(500);
+			waitSeconds(500);
 		}
-		Thread.sleep(500);
+		waitSeconds(500);
 
 	}
 
+	public boolean elementDisplayed(String Locator) {
+		boolean status = false;
+		try {
+			status = getWebElement(Locator).isDisplayed();
+		} catch (Exception e) {
+			// TODO: handle exception
+			status = false;
+		}
+		return status;
+	}
+
 	// Waits for start page to load
-	protected static void waitForStartPageloade() throws InterruptedException {
+	public boolean waitForElementToBeClickable(String xpathLocatio) {
 
 		try {
-			Thread.sleep(2000);
-			for (int i = 0; i <= 400; i++) {
-				boolean loadingStatus = webDriver
-						.findElement(By.xpath("//div[@class='busy active']//div[@class='element-loading-icon']"))
-						.isDisplayed();
-				if (loadingStatus) {
-					Thread.sleep(2000);
-
-				} else if (loadingStatus) {
-					break;
-				}
+			if (xpathLocatio.startsWith("xpath=")) {
+				xpathLocatio = xpathLocatio.substring(6);
 			}
-			Thread.sleep(2000);
 
+			WebDriverWait loadmypage = new WebDriverWait(webDriver, 1000);
+			loadmypage.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathLocatio)));
+			// HighlightMyElement(webDriver.findElement(By.xpath(xpathLocatio)));
+			logReport("waitForElementToBeClickable() method is called will wait until the element is clickable",
+					"The element is clickable", "Pass", GlobalParameters.boolScreenShortForEachStep);
+			return true;
 		} catch (Exception e) {
 			System.out.println(
-					"Page Loading waitForStartPageloade() is complete or might be an exception on Page Loading");
-			logReport("waitForStartPageloade() method called the page is loading",
-					"Error while loading page : " + e.toString(), "Error", true);
+					"Page Loading waitForElementToBeClickable() is complete or might be an exception on Page Loading");
+			logReport("waitForElementToBeClickable() method called the page is loading",
+					"Error while waiting for the object : xpath=" + xpathLocatio, "Error", true);
+			return false;
 		}
 
 	}
 
 	// Waits for page to load
-	protected static void waitForPageLoad() throws InterruptedException {
+	public void waitForPageLoad() {
 
 		try {
-			Thread.sleep(2000);
-			for (int i = 0; i <= 400; i++) {
-				boolean loadingStatus = webDriver.findElement(By.xpath("//div[@class='loading-icon']")).isDisplayed();
+			waitSeconds(5);
+			for (int i = 0; i <= 800; i++) {
+				int loadingStatus = 0;
+				try {
+					loadingStatus = getWebElementsList("xpath=//div[@class='busy active']").size();
+				} catch (Exception e) {
+				}
 
-				if (loadingStatus) {
-					Thread.sleep(15000);
-					System.out.println("Page refresh in waitForStartPageLoading times" + i * 15 + "seconds");
-				} else if (webDriver.findElement(By.xpath("//div[@class='cal-day-panel clearfix']")).isDisplayed()) {
+				if (loadingStatus > 0) {
+					waitSeconds(5);
+					System.out.println("Page refresh in waitForStartPageLoading times" + i * 5 + "seconds");
+				} else {
 					break;
 				}
 			}
-			Thread.sleep(2000);
+			waitSeconds(5);
 
 		} catch (Exception e) {
 			System.out.println(
 					"Page Loading waitForStartPageloade() is complete or might be an exception on Page Loading");
-			logReport("waitForPageLoad() method called the page is loading",
-					"Error while loading page : " + e.toString(), "Error", true);
+			logReport("waitForPageLoad() method called the page is loading", "Error while loading page ", "Error",
+					true);
 		}
 
 	}
 
 	// Click on the object
-	protected static void clickElement(String nameOfObject, String locator, String action) {
+	public void clickElement(String nameOfObject, String locator, String action) {
 		if (!action.equalsIgnoreCase("")) {
 			try {
 
@@ -190,7 +253,7 @@ public class WebLibrary implements LibraryInterface {
 	}
 
 	// Send key to a test field
-	protected static void sendKeyToElement(String nameOfObject, String locator, String value) {
+	public void sendKeyToElement(String nameOfObject, String locator, String value) {
 		if (!value.equalsIgnoreCase("")) {
 			try {
 				WebElement element = getWebElement(locator);
@@ -232,19 +295,34 @@ public class WebLibrary implements LibraryInterface {
 	}
 
 	// close chrome driver
-	protected static void endChromeDriver() throws IOException {
-		Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");
+
+	// end chrome driver
+	public void endChromeDriver() {
+
+		try {
+			Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	protected static void waitSeconds(int seconds) {
+	public void waitSeconds(int seconds) {
 		try {
-			Thread.sleep(seconds * 1000);
+			if (seconds == 500)
+				Thread.sleep(500);
+			else
+				Thread.sleep(seconds * 1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private WebLibrary() {
+	WebLibrary() {
+	}
+
+	public WebDriver getWebDriver() {
+		return webDriver;
 	}
 
 	public static WebLibrary getWebLibrary() {
@@ -253,26 +331,8 @@ public class WebLibrary implements LibraryInterface {
 		return webLibInstance;
 	}
 
-	public static void main(String[] args) throws InterruptedException {
-		launchBrowser("https://www.google.com/");
-
-		waitSeconds(2);
-
-		sendKeyToElement("Google search text box", "xpath=//input[@class='gLFyf gsfi']", "extent report");
-
-		waitSeconds(2);
-
-		clickElement("Click on Google Search", "xpath=//div[@class='FPdoLc VlcLAe']//input[@value='Google Search']",
-				"yes");
-		waitSeconds(10);
-		try {
-
-			endChromeDriver();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// webDriver.quit();
-	}
+	public static void main(String[] args) throws InterruptedException, IOException {
+		getWebLibrary().endChromeDriver();
+	} // webDriver.quit(); }
 
 }
