@@ -188,6 +188,8 @@ public class AppTest implements LibraryInterface {
 		_webLibInterface.waitForElementToBeClickable("xpath=//*[@id='Actions_Sign']");
 
 		_webLibInterface.waitSeconds(2);
+		
+		_webLibInterface.waitSeconds(5);
 
 	}
 
