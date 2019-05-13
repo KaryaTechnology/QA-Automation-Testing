@@ -18,7 +18,7 @@ public class WebLibrary implements LibraryInterface {
 	static WebLibrary webLibInstance = null;
 
 	// Need to change the path
-	protected static void launchBrowser(String URL) {
+	public static void launchBrowser(String URL) {
 		try {
 			_reportLibInterface.createReport();
 			_reportLibInterface.startTest("Launch Application");

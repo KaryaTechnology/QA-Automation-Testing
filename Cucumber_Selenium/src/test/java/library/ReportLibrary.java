@@ -26,7 +26,6 @@ public class ReportLibrary {
 	public static ExtentHtmlReporter htmlReporter;
 	public static ExtentReports report;
 	public static ExtentTest logger;
-
 	static ReportLibrary reportLibInstance = null;
 
 	/********************************************
