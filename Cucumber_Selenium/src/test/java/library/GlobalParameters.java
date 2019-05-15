@@ -6,7 +6,7 @@ public class GlobalParameters {
 
 	public static String strSetReportLocation = "DESK";
 	protected static boolean booHighliteFlag = true;
-	public static boolean boolScreenShortForEachStep = true;
+	public static boolean boolScreenShortForEachStep = false;
 	public static String strChromeDriverLocation = "";
 	public static String strBasePath = "";
 	public static String strTestCaseId = "TestCaseID";

@@ -18,7 +18,6 @@ import org.openqa.selenium.Keys;
 
 public class AppTest implements LibraryInterface {
 
-	// private static ChromeDriver driver;
 	public static LinkedHashMap<String, String> excelData;
 
 	@BeforeClass
@@ -53,17 +52,13 @@ public class AppTest implements LibraryInterface {
 
 		_webLibInterface.waitForPageLoad();
 
-		// _webLibInterface.clickElement("People group dropdown",
-		// "id=fakeEntityPeopleGroupFk_relationship", "Click");
 		_webLibInterface.sendKeyToElement("People group dropdown", "id=fakeEntityPeopleGroupFk_relationship",
 				"(All Consumers)");
 
 		_webLibInterface.clickElement("(All Consumers) from the people group", "xpath=//span[text()='(All Consumers)']",
 				"Click");
-		// loadmypage.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='consumer343']")));
-		_webLibInterface.waitForPageLoad();
 
-		_webLibInterface.waitSeconds(5);
+		_webLibInterface.waitForPageLoad();
 
 		CreateMultiConsumer();
 	}
@@ -71,17 +66,18 @@ public class AppTest implements LibraryInterface {
 	// @Test
 
 	public void CreateMultiConsumer() {
+
 		_reportLibInterface.startTest("CreateMulti Consumer");
 
 		_webLibInterface.sendKeyToElement("Enter the consumer to be searched", "id=consumerSearch",
 				excelData.get("ConsumerName").trim());
 
-		_webLibInterface.waitForElementToBeClickable("xpath=//div[@class='consumer column ng-scope']");
-
-		// _webLibInterface.waitSeconds(8);
+		_webLibInterface.waitForPageLoad();
 
 		_webLibInterface.clickElement("Consumer " + excelData.get("ConsumerName").trim() + " ",
-				"xpath=//div[@class='consumer column ng-scope']", "click");
+				"xpath=//div[@class='consumer column ng-scope']/div[contains(.,'" + excelData.get("ConsumerName").trim()
+						+ "')]",
+				"click");
 
 		_webLibInterface.clickElement("Next Button ", "xpath=//button[contains(.,'Next')]", "click");
 
@@ -91,17 +87,26 @@ public class AppTest implements LibraryInterface {
 			_webLibInterface.clickElement("New session Button ", "xpath=//button[contains(.,'New session')]", "click");
 		}
 
-		_webLibInterface.waitForElementToBeClickable("xpath=//input[@id='mileage_attribute']");
+		_webLibInterface.waitForPageLoad();
 
-		_webLibInterface.clickElement("Location", "id=serviceSessionServiceLocationFk_relationship", "click");
+		_webLibInterface.sendKeyToElement("Location", "id=serviceSessionServiceLocationFk_relationship",
+				"1083880488 - Allendale House");
+
+		_webLibInterface.waitForPageLoad();
 
 		_webLibInterface.clickElement("1083880488 - Allendale House option ",
 				"xpath=//span[text()='1083880488 - Allendale House']", "yes");
 
-		_webLibInterface.clickElement("Activity", "id=serviceSessionServiceFk_relationship", "click");
+		_webLibInterface.waitForPageLoad();
+
+		_webLibInterface.sendKeyToElement("Activity", "id=serviceSessionServiceFk_relationship", "Work");
+
+		_webLibInterface.waitForPageLoad();
 
 		_webLibInterface.clickElement("Activity Work",
 				"xpath=//*[@id='serviceSessionServiceFk_element']//span[text()='Work']", "click");
+
+		_webLibInterface.waitForPageLoad();
 
 		Date date = new Date();
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm");
@@ -120,16 +125,28 @@ public class AppTest implements LibraryInterface {
 
 		_webLibInterface.getWebDriver().findElement(By.id("endAt_time_attribute")).sendKeys(Keys.TAB);
 
+		_webLibInterface.waitForPageLoad();
+
 		_webLibInterface.clickElement("Next Button ", "xpath=//button[contains(.,'Next')]", "click");
 
-		if (_webLibInterface.waitForElementToBeClickable("xpath=//*[@id='service-entry']/div")) {
+		_webLibInterface.waitForPageLoad();
+
+		if (_webLibInterface.elementDisplayed("xpath=//button[contains(.,'Start')]")) {
 
 			_webLibInterface.clickElement("Consumers Select All", "id=Consumers_Select_All", "click");
 
 			_webLibInterface.clickElement("Start", "xpath=//button[contains(.,'Start')]", "click");
 
-			_webLibInterface.waitForElementToBeClickable("xpath=//*[@id='service-entry']/div");
+			// _webLibInterface.waitForElementToBeClickable("xpath=//*[@id='service-entry']/div");
+
+			_webLibInterface.waitForPageLoad();
 		}
+
+		selectConsumerToSign();
+	}
+
+	public void selectConsumerToSign() {
+		_reportLibInterface.startTest("Sign and Aprove Consumer Session");
 
 		_webLibInterface.clickElement(excelData.get("ConsumerName").trim() + " consumer card",
 				"xpath=//a//div[text()='" + excelData.get("ConsumerName").trim() + "']", "click");
@@ -170,7 +187,7 @@ public class AppTest implements LibraryInterface {
 
 					SignConsumer();
 
-					_webLibInterface.waitSeconds(5);
+					_webLibInterface.waitForPageLoad();
 
 					_webLibInterface.clickElement("Check box",
 							"//div[" + i + "][@data-ng-repeat='row in model']//div[@class='icon fa fa-lg fa-square-o']",
@@ -187,9 +204,7 @@ public class AppTest implements LibraryInterface {
 
 		_webLibInterface.waitForElementToBeClickable("xpath=//*[@id='Actions_Sign']");
 
-		_webLibInterface.waitSeconds(2);
-		
-		_webLibInterface.waitSeconds(5);
+		_webLibInterface.waitForPageLoad();
 
 	}
 

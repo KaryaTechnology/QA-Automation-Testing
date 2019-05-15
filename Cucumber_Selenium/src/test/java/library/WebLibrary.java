@@ -13,8 +13,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import pageObjectLocators.PageLocators;
-
 public class WebLibrary implements LibraryInterface {
 
 	protected static WebDriver webDriver;
@@ -28,12 +26,9 @@ public class WebLibrary implements LibraryInterface {
 
 			File file = new File(".");
 
-<<<<<<< HEAD
 			System.setProperty("webdriver.chrome.driver",
 					file.getCanonicalPath() + "\\DependentFiles\\chromedriver.exe");
-=======
 			System.setProperty("webdriver.chrome.driver", file.getCanonicalPath() + "\\Driver\\chromedriver.exe");
->>>>>>> branch 'master' of https://github.com/KaryaTechnology/QA-Automation-Testing.git
 
 			webDriver = new ChromeDriver();
 			webDriver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
@@ -55,7 +50,7 @@ public class WebLibrary implements LibraryInterface {
 		WebElement element = null;
 
 		try {
-			WebDriverWait wait = new WebDriverWait(webDriver, 15);
+			WebDriverWait wait = new WebDriverWait(webDriver, 10);
 			if (Locator[0].startsWith("css=")) {
 				Locator[0] = Locator[0].substring(4);
 				wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(Locator[0])));
@@ -92,7 +87,7 @@ public class WebLibrary implements LibraryInterface {
 			}
 			System.out.println("Object not found locator :" + Locator[0]);
 			_reportLibInterface.logReportStepsStatus("Object is to be found", "Object is not found : " + Locator[0],
-					"Error",
+					"WARNING",
 					_reportLibInterface.getScreenShot(webDriver, "Objectnot Found in " + GlobalParameters.strPageName));
 		}
 
@@ -145,7 +140,7 @@ public class WebLibrary implements LibraryInterface {
 			}
 			System.out.println("Object not found locator :" + Locator[0]);
 			_reportLibInterface.logReportStepsStatus("Object is to be found", "Object is not found : " + Locator[0],
-					"Error",
+					"WARNING",
 					_reportLibInterface.getScreenShot(webDriver, "Objectnot Found in " + GlobalParameters.strPageName));
 			return null;
 		}
@@ -171,10 +166,14 @@ public class WebLibrary implements LibraryInterface {
 
 	}
 
-	public boolean elementDisplayed(String Locator) {
+	public boolean elementDisplayed(String xpathLocator) {
 		boolean status = false;
 		try {
-			status = getWebElement(Locator).isDisplayed();
+			if (xpathLocator.startsWith("xpath=")) {
+				xpathLocator = xpathLocator.substring(6);
+			}
+			status = webDriver.findElement(By.xpath(xpathLocator)).isDisplayed();
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			status = false;
@@ -183,16 +182,15 @@ public class WebLibrary implements LibraryInterface {
 	}
 
 	// Waits for start page to load
-	public boolean waitForElementToBeClickable(String xpathLocatio) {
+	public boolean waitForElementToBeClickable(String xpathLocator) {
 
 		try {
-			if (xpathLocatio.startsWith("xpath=")) {
-				xpathLocatio = xpathLocatio.substring(6);
+			if (xpathLocator.startsWith("xpath=")) {
+				xpathLocator = xpathLocator.substring(6);
 			}
 
 			WebDriverWait loadmypage = new WebDriverWait(webDriver, 1000);
-			loadmypage.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathLocatio)));
-			// HighlightMyElement(webDriver.findElement(By.xpath(xpathLocatio)));
+			loadmypage.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathLocator)));
 			logReport("waitForElementToBeClickable() method is called will wait until the element is clickable",
 					"The element is clickable", "Pass", GlobalParameters.boolScreenShortForEachStep);
 			return true;
@@ -200,7 +198,7 @@ public class WebLibrary implements LibraryInterface {
 			System.out.println(
 					"Page Loading waitForElementToBeClickable() is complete or might be an exception on Page Loading");
 			logReport("waitForElementToBeClickable() method called the page is loading",
-					"Error while waiting for the object : xpath=" + xpathLocatio, "Error", true);
+					"Error while waiting for the object : xpath=" + xpathLocator, "Error", true);
 			return false;
 		}
 
@@ -210,11 +208,12 @@ public class WebLibrary implements LibraryInterface {
 	public void waitForPageLoad() {
 
 		try {
-			waitSeconds(5);
+			waitSeconds(2);
+			webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 			for (int i = 0; i <= 800; i++) {
 				int loadingStatus = 0;
 				try {
-					loadingStatus = getWebElementsList("xpath=//div[@class='busy active']").size();
+					loadingStatus = webDriver.findElements(By.xpath("//div[@class='busy active']")).size();
 				} catch (Exception e) {
 				}
 
@@ -225,13 +224,15 @@ public class WebLibrary implements LibraryInterface {
 					break;
 				}
 			}
-			waitSeconds(5);
+			waitSeconds(2);
 
 		} catch (Exception e) {
 			System.out.println(
 					"Page Loading waitForStartPageloade() is complete or might be an exception on Page Loading");
 			logReport("waitForPageLoad() method called the page is loading", "Error while loading page ", "Error",
 					true);
+		} finally {
+			webDriver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
 		}
 
 	}
@@ -338,33 +339,8 @@ public class WebLibrary implements LibraryInterface {
 		return webLibInstance;
 	}
 
-<<<<<<< HEAD
-	public static void main(String[] args) throws InterruptedException {
-
-		launchBrowser("https://www.google.com/");
-
-		waitSeconds(2);
-
-		sendKeyToElement("Google search text box", "xpath=//input[@class='gLFyf gsfi']", "extent report");
-
-		waitSeconds(2);
-
-		clickElement("Click on Google Search", "xpath=//div[@class='FPdoLc VlcLAe']//input[@value='Google Search']",
-				"yes");
-		waitSeconds(10);
-		try {
-
-			endChromeDriver();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// webDriver.quit();
-	}
-=======
-	public static void main(String[] args) throws InterruptedException, IOException {
+	public static void main(String[] args) {
 		getWebLibrary().endChromeDriver();
-	} // webDriver.quit(); }
->>>>>>> branch 'master' of https://github.com/KaryaTechnology/QA-Automation-Testing.git
+	}
 
 }
