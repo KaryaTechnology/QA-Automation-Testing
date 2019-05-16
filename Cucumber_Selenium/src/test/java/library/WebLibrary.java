@@ -208,9 +208,9 @@ public class WebLibrary implements LibraryInterface {
 	public void waitForPageLoad() {
 
 		try {
-			waitSeconds(2);
+			waitSeconds(1);
 			webDriver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
-			for (int i = 0; i <= 800; i++) {
+			for (int i = 1; i <= 400; i++) {
 				int loadingStatus = 0;
 				try {
 					loadingStatus = webDriver.findElements(By.xpath("//div[@class='busy active']")).size();
@@ -218,13 +218,13 @@ public class WebLibrary implements LibraryInterface {
 				}
 
 				if (loadingStatus > 0) {
-					waitSeconds(5);
-					System.out.println("Page refresh in waitForStartPageLoading times" + i * 5 + "seconds");
+					waitSeconds(2);
+					System.out.println("Page refresh in waitForStartPageLoading times" + i * 2 + "seconds");
 				} else {
 					break;
 				}
 			}
-			waitSeconds(2);
+			waitSeconds(1);
 
 		} catch (Exception e) {
 			System.out.println(

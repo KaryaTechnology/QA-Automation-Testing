@@ -14,16 +14,16 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class FileLibrary {
-	/*public static void main(String []args) throws InvalidFormatException, IOException
-	{
-		getExcelData("MasterExcel", "Sheet1", "1");
-	}*/
+	/*
+	 * public static void main(String []args) throws InvalidFormatException,
+	 * IOException { getExcelData("MasterExcel", "Sheet1", "1"); }
+	 */
 	public static String BasePath() throws IOException {
-		 File Directory = new File(".");
-		 String StrBasepath = Directory.getCanonicalPath();
-		 //GlobalVariables.strBasepath = StrBasepath;
-		 return StrBasepath;
-		}
+		File Directory = new File(".");
+		String StrBasepath = Directory.getCanonicalPath();
+		// GlobalVariables.strBasepath = StrBasepath;
+		return StrBasepath;
+	}
 
 	public static LinkedHashMap<String, String> getExcelData(String strExcelName, String strSheetName,
 			String strTestCaseID) throws IOException, InvalidFormatException {
@@ -37,13 +37,14 @@ public class FileLibrary {
 		} catch (Exception e) {
 			// TODO: handle exception
 			DriverFile = new File(BasePath() + "\\TestData\\" + strExcelName + ".xls");
-			InputStream ExcelFileToRead = new FileInputStream(DriverFile);;
+			InputStream ExcelFileToRead = new FileInputStream(DriverFile);
+			;
 			dataWorkbook = new HSSFWorkbook(ExcelFileToRead);
 		}
 
 		Sheet dataExcelSheet = dataWorkbook.getSheet(strSheetName);
 		Row dataRow;
-		//System.out.println(strExcelName + " : " + strSheetName);
+		// System.out.println(strExcelName + " : " + strSheetName);
 
 		LinkedHashMap<String, String> testCaseHedderData = new LinkedHashMap<String, String>();
 
@@ -51,7 +52,7 @@ public class FileLibrary {
 			dataRow = dataExcelSheet.getRow(i);
 			String strDataTestcaseIDCol = "";
 			try {
-				strDataTestcaseIDCol = dataRow.getCell(0).getStringCellValue();
+				strDataTestcaseIDCol = dataRow.getCell(0).getStringCellValue().trim();
 			} catch (Exception e) {
 				// TODO: handle exception
 				strDataTestcaseIDCol = "";
@@ -64,7 +65,7 @@ public class FileLibrary {
 					String dataHeadder = dataExcelSheet.getRow(0).getCell(j).getStringCellValue().trim();
 					String dataValue = "";
 					try {
-						dataValue = dataExcelSheet.getRow(i).getCell(j).getStringCellValue();
+						dataValue = dataExcelSheet.getRow(i).getCell(j).getStringCellValue().trim();
 					} catch (Exception e) {
 						dataValue = "";
 					}
@@ -74,7 +75,7 @@ public class FileLibrary {
 			}
 		}
 		dataWorkbook.close();
-		//System.out.println("data sheet value"+testCaseHedderData);
+		// System.out.println("data sheet value"+testCaseHedderData);
 		return testCaseHedderData;
 	}
 }

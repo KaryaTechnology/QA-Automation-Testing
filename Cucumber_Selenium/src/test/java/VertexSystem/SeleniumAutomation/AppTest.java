@@ -1,9 +1,11 @@
 package VertexSystem.SeleniumAutomation;
 
 import library.LibraryInterface;
+import pageObjectLocators.PageLocators;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,23 +18,27 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 
-public class AppTest implements LibraryInterface {
+public class AppTest extends PageLocators implements LibraryInterface {
 
 	public static LinkedHashMap<String, String> excelData;
+	public static PageLocators pgLoc = new PageLocators();
 
 	@BeforeClass
 	public static void Login() throws InterruptedException, InvalidFormatException, IOException {
 		excelData = FileLibrary.getExcelData("MasterExcel", "Sheet1", "1");
 
+		pgLoc.loginPage("Username");
+
 		_webLibInterface.launchBrowser(excelData.get("URL"));
 
 		_webLibInterface.sendKeyToElement("Enter the value " + excelData.get("Username") + " in the field username",
-				"id=Username", excelData.get("Username"));
+				pgLoc.loginPage("Username"), excelData.get("Username"));
 
 		_webLibInterface.sendKeyToElement("Enter the value " + excelData.get("Password") + " in the field username",
-				"id=Password", excelData.get("Password"));
+				pgLoc.loginPage("Password"), excelData.get("Password"));
 
-		_webLibInterface.clickElement("Click on the button Login", "id=submit", "Click");
+		_webLibInterface.clickElement("Click on the button Login", pgLoc.loginPage("Submit"),
+				excelData.get("Clklogin"));// Clicklogin
 
 		_webLibInterface.waitForElementToBeClickable("xpath=//strong[contains(.,'11:00 pm')]");
 
@@ -44,19 +50,11 @@ public class AppTest implements LibraryInterface {
 
 		_webLibInterface.waitForPageLoad();
 
-		_webLibInterface.clickElement("New Service Session dropdown",
-				"xpath=//div[@title='New Service Session']/div/div[2]", "Click");
+		_webLibInterface.clickElement("New Service Session dropdown", pgLoc.myPage("NewSessionDrop"),
+				excelData.get("ClkNewSessionDrop"));
 
-		_webLibInterface.clickElement("Multi Consumers from the dropdown",
-				"id=buttons_buttonGroup_undefinedNew_Service_Session_Multi_Consumers", "Click");
-
-		_webLibInterface.waitForPageLoad();
-
-		_webLibInterface.sendKeyToElement("People group dropdown", "id=fakeEntityPeopleGroupFk_relationship",
-				"(All Consumers)");
-
-		_webLibInterface.clickElement("(All Consumers) from the people group", "xpath=//span[text()='(All Consumers)']",
-				"Click");
+		_webLibInterface.clickElement("Multi Consumers from the dropdown", pgLoc.myPage("NewMultiConsumersSession"),
+				excelData.get("ClkMultConsumerSession"));
 
 		_webLibInterface.waitForPageLoad();
 
@@ -69,130 +67,173 @@ public class AppTest implements LibraryInterface {
 
 		_reportLibInterface.startTest("CreateMulti Consumer");
 
-		_webLibInterface.sendKeyToElement("Enter the consumer to be searched", "id=consumerSearch",
-				excelData.get("ConsumerName").trim());
+		if (excelData.get("EntPeopleGroup").trim() != "") {
+			String PeopleGroup = excelData.get("EntPeopleGroup").trim();
+			_webLibInterface.sendKeyToElement("People group dropdown", pgLoc.multiSesPro("PropleGroupTxtBx"),
+					PeopleGroup);
 
-		_webLibInterface.waitForPageLoad();
-
-		_webLibInterface.clickElement("Consumer " + excelData.get("ConsumerName").trim() + " ",
-				"xpath=//div[@class='consumer column ng-scope']/div[contains(.,'" + excelData.get("ConsumerName").trim()
-						+ "')]",
-				"click");
-
-		_webLibInterface.clickElement("Next Button ", "xpath=//button[contains(.,'Next')]", "click");
-
-		_webLibInterface.waitForPageLoad();
-
-		if (_webLibInterface.elementDisplayed("xpath=//button[contains(.,'New session')]")) {
-			_webLibInterface.clickElement("New session Button ", "xpath=//button[contains(.,'New session')]", "click");
-		}
-
-		_webLibInterface.waitForPageLoad();
-
-		_webLibInterface.sendKeyToElement("Location", "id=serviceSessionServiceLocationFk_relationship",
-				"1083880488 - Allendale House");
-
-		_webLibInterface.waitForPageLoad();
-
-		_webLibInterface.clickElement("1083880488 - Allendale House option ",
-				"xpath=//span[text()='1083880488 - Allendale House']", "yes");
-
-		_webLibInterface.waitForPageLoad();
-
-		_webLibInterface.sendKeyToElement("Activity", "id=serviceSessionServiceFk_relationship", "Work");
-
-		_webLibInterface.waitForPageLoad();
-
-		_webLibInterface.clickElement("Activity Work",
-				"xpath=//*[@id='serviceSessionServiceFk_element']//span[text()='Work']", "click");
-
-		_webLibInterface.waitForPageLoad();
-
-		Date date = new Date();
-		DateFormat dateFormat = new SimpleDateFormat("HH:mm");
-		String StartTime = dateFormat.format(date).toString();
-
-		_webLibInterface.sendKeyToElement("Start At", "id=startAt_time_attribute", StartTime);
-
-		_webLibInterface.getWebDriver().findElement(By.id("startAt_time_attribute")).sendKeys(Keys.TAB);
-
-		Calendar Cal = Calendar.getInstance();
-		Cal.setTime(date);
-		Cal.add(Calendar.HOUR, 1);
-		String EndTime = dateFormat.format(Cal.getTime()).toString();
-
-		_webLibInterface.sendKeyToElement("End At", "id=endAt_time_attribute", EndTime);
-
-		_webLibInterface.getWebDriver().findElement(By.id("endAt_time_attribute")).sendKeys(Keys.TAB);
-
-		_webLibInterface.waitForPageLoad();
-
-		_webLibInterface.clickElement("Next Button ", "xpath=//button[contains(.,'Next')]", "click");
-
-		_webLibInterface.waitForPageLoad();
-
-		if (_webLibInterface.elementDisplayed("xpath=//button[contains(.,'Start')]")) {
-
-			_webLibInterface.clickElement("Consumers Select All", "id=Consumers_Select_All", "click");
-
-			_webLibInterface.clickElement("Start", "xpath=//button[contains(.,'Start')]", "click");
-
-			// _webLibInterface.waitForElementToBeClickable("xpath=//*[@id='service-entry']/div");
+			_webLibInterface.clickElement(PeopleGroup + " from the people group",
+					pgLoc.multiSesPro("PropleGroupOpt").replace("PPGRP", PeopleGroup), "Click");
 
 			_webLibInterface.waitForPageLoad();
 		}
 
-		selectConsumerToSign();
+		if (excelData.get("EntConsumer").trim() != "") {
+			String[] consumers = excelData.get("EntConsumer").trim().split(";");
+
+			for (String consumer : consumers) {
+				_webLibInterface.sendKeyToElement("Enter the consumer to be searched",
+						pgLoc.multiSesPro("ConsumerTxtBx"), consumer);
+
+				_webLibInterface.waitForPageLoad();
+
+				_webLibInterface.clickElement("Consumer " + consumer,
+						pgLoc.multiSesPro("ConsumerOpt").replace("CONSOPT", consumer), "click");
+
+				_webLibInterface.waitForPageLoad();
+			}
+		}
+
+		_webLibInterface.clickElement("Next Button ", pgLoc.multiSesPro("NextButton"), excelData.get("NextButton"));
+
+		_webLibInterface.waitForPageLoad();
+
+		if (_webLibInterface.elementDisplayed(pgLoc.multiSesPro("NewSessionButton"))) {
+			_webLibInterface.clickElement("New session Button ", pgLoc.multiSesPro("NewSessionButton"), "click");
+		}
+
+		_webLibInterface.waitForPageLoad();
+
+		if (excelData.get("EntLocation") != "") {
+			String Location = excelData.get("EntLocation");
+			_webLibInterface.sendKeyToElement("Location", pgLoc.multiSesPro("LocationTxtBx"), Location);
+
+			_webLibInterface.waitForPageLoad();
+
+			_webLibInterface.clickElement(Location, pgLoc.multiSesPro("LocationOpt").replace("LOCOPT", Location),
+					"yes");
+
+			_webLibInterface.waitForPageLoad();
+		}
+
+		if (excelData.get("EntActivity") != "") {
+			String Activity = excelData.get("EntActivity");
+			_webLibInterface.sendKeyToElement("Activity", pgLoc.multiSesPro("ActivituTxtBx"), Activity);
+
+			_webLibInterface.waitForPageLoad();
+
+			_webLibInterface.clickElement("Activity Work",
+					pgLoc.multiSesPro("ActivituOpt").replace("ACTVOPT", Activity), "click");
+
+			_webLibInterface.waitForPageLoad();
+		}
+
+		Date date = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+		String StartTime = excelData.get("EntStartAt");
+		if (StartTime != "") {
+			if (StartTime.equalsIgnoreCase("systime"))
+				StartTime = dateFormat.format(date).toString();
+
+			_webLibInterface.sendKeyToElement("Start At", pgLoc.multiSesPro("StartAtTxtBx"), StartTime);
+
+			_webLibInterface.getWebDriver().findElement(By.id("startAt_time_attribute")).sendKeys(Keys.TAB);
+		}
+
+		String EndTime = excelData.get("EntEndAt").toLowerCase();
+		if (EndTime != "") {
+
+			if (EndTime.contains("systime+")) {
+				Calendar Cal = Calendar.getInstance();
+				try {
+					date = dateFormat.parse(StartTime);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				Cal.setTime(date);
+				int addtime;
+				String strAddTime = EndTime.replace("systime+", "");
+				if (strAddTime.contains("h")) {
+					addtime = Integer.parseInt(strAddTime.replace("h", ""));
+					Cal.add(Calendar.HOUR, addtime);
+				} else if (strAddTime.contains("m")) {
+					addtime = Integer.parseInt(strAddTime.replace("m", ""));
+					Cal.add(Calendar.MINUTE, addtime);
+				}
+
+				EndTime = dateFormat.format(Cal.getTime()).toString();
+			}
+
+			_webLibInterface.sendKeyToElement("End At", pgLoc.multiSesPro("EndAtTxtBx"), EndTime);
+
+			_webLibInterface.getWebDriver().findElement(By.id("endAt_time_attribute")).sendKeys(Keys.TAB);
+
+		}
+
+		_webLibInterface.waitForPageLoad();
+
+		if (excelData.get("ClkNextCreatSession") != "") {
+
+			_webLibInterface.clickElement("Next Button ", pgLoc.multiSesPro("NextButton"), "click");
+
+			_webLibInterface.waitForPageLoad();
+
+			if (_webLibInterface.elementDisplayed(pgLoc.multiSesPro("StartButton"))) {
+
+				_webLibInterface.clickElement("Consumers Select All", pgLoc.multiSesPro("SelectAllConsumer"), "click");
+
+				_webLibInterface.clickElement("Start", pgLoc.multiSesPro("StartButton"), "click");
+
+				_webLibInterface.waitForPageLoad();
+			}
+		}
+
+		if (excelData.get("SelectConsumerToSign") != "")
+			selectConsumerToSign();
 	}
 
 	public void selectConsumerToSign() {
 		_reportLibInterface.startTest("Sign and Aprove Consumer Session");
 
-		_webLibInterface.clickElement(excelData.get("ConsumerName").trim() + " consumer card",
-				"xpath=//a//div[text()='" + excelData.get("ConsumerName").trim() + "']", "click");
+		if (excelData.get("SelectConsumerToSign") != "Sign All") {
 
-		_webLibInterface.waitForElementToBeClickable("xpath='//*[@id='Actions_Sign']");
+			String consumer = excelData.get("SelectConsumerToSign");
 
-		int DocReviewSize = _webLibInterface.getWebElementsList("xpath=//div[@data-ng-repeat='row in model']").size();
+			_webLibInterface.clickElement(consumer + " consumer card",
+					pgLoc.multiSesPro("ConsumerCard").replace("CONSUMER", consumer), "click");
 
-		for (int i = 1; i <= DocReviewSize; i++) {
-			String TransStatus = _webLibInterface
-					.getWebElement("xpath=//div[" + i + "][@data-ng-repeat='row in model']/div[9]/div[2]/span/a")
-					.getText();
+			_webLibInterface.waitForPageLoad();
 
-			if (TransStatus.equals("Not signed")) {
+			int DocReviewSize = _webLibInterface.getWebElementsList(pgLoc.multiSesPro("DocRevSize")).size();
 
-				String SNcolor = _webLibInterface
-						.getWebElement(
-								"xpath=//div[" + i + "][@data-ng-repeat='row in model']//div[text()='Service Note']")
-						.getCssValue("color");
-				String Progresscolor = _webLibInterface
-						.getWebElement("xpath=//div[" + i + "][@data-ng-repeat='row in model']//div[text()='Progress']")
-						.getCssValue("color");
+			for (int i = 1; i <= DocReviewSize; i++) {
+				String TransStatus = _webLibInterface
+						.getWebElement(pgLoc.multiSesPro("TransStatus").replace("ROLNO", i + "")).getText();
 
-				String Supportcolor = _webLibInterface
-						.getWebElement("xpath=//div[" + i + "][@data-ng-repeat='row in model']//div[text()='Supports']")
-						.getCssValue("color");
+				if (TransStatus.equals("Not signed")) {
 
-				String SRcolor = _webLibInterface
-						.getWebElement(
-								"xpath=//div[" + i + "][@data-ng-repeat='row in model']//div[text()='Service Record']")
-						.getCssValue("color");
-				if (SNcolor.equals("rgba(0, 0, 0, 1)") && Progresscolor.equals("rgba(0, 0, 0, 1)")
-						&& Supportcolor.equals("rgba(0, 0, 0, 1)") && SRcolor.equals("rgba(35, 141, 18, 1)")) {
+					String SNcolor = _webLibInterface
+							.getWebElement(pgLoc.multiSesPro("SNLink").replace("ROLNO", i + "")).getCssValue("color");
+					String Progresscolor = _webLibInterface
+							.getWebElement(pgLoc.multiSesPro("PLink").replace("ROLNO", i + "")).getCssValue("color");
 
-					_webLibInterface.clickElement("Check box",
-							"//div[" + i + "][@data-ng-repeat='row in model']//div[@class='icon fa fa-lg fa-square-o']",
-							"click");
+					String Supportcolor = _webLibInterface
+							.getWebElement(pgLoc.multiSesPro("SLink").replace("ROLNO", i + "")).getCssValue("color");
 
-					SignConsumer();
+					String SRcolor = _webLibInterface
+							.getWebElement(pgLoc.multiSesPro("SRLink").replace("ROLNO", i + "")).getCssValue("color");
 
-					_webLibInterface.waitForPageLoad();
+					if (SNcolor.equals("rgba(0, 0, 0, 1)") && Progresscolor.equals("rgba(0, 0, 0, 1)")
+							&& Supportcolor.equals("rgba(0, 0, 0, 1)") && SRcolor.equals("rgba(35, 141, 18, 1)")) {
 
-					_webLibInterface.clickElement("Check box",
-							"//div[" + i + "][@data-ng-repeat='row in model']//div[@class='icon fa fa-lg fa-square-o']",
-							"click");
+						_webLibInterface.clickElement("Check box",
+								pgLoc.multiSesPro("DocRevCheckBox").replace("ROLNO", i + ""), "click");
 
+						SignConsumer();
+
+						_webLibInterface.waitForPageLoad();
+
+					}
 				}
 			}
 		}
@@ -202,8 +243,6 @@ public class AppTest implements LibraryInterface {
 
 		_webLibInterface.clickElement("Sign", "id=Actions_Sign", "click");
 
-		_webLibInterface.waitForElementToBeClickable("xpath=//*[@id='Actions_Sign']");
-
 		_webLibInterface.waitForPageLoad();
 
 	}
@@ -211,8 +250,6 @@ public class AppTest implements LibraryInterface {
 	public void ApproveConsumer() throws InterruptedException {
 
 		_webLibInterface.clickElement("Sign", "id=Actions_Approve", "click");
-
-		_webLibInterface.waitForElementToBeClickable("xpath=//*[@id='Actions_Approve']");
 
 		_webLibInterface.waitSeconds(2);
 	}
