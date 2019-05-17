@@ -175,7 +175,7 @@ public class ReportLibrary {
 	 ********************************************/
 	protected static String reportLocation(String where_ProjDesk) {
 
-		String reportLocation;
+		String reportLocation = "";
 		switch (where_ProjDesk.toUpperCase().trim()) {
 		case "PROJ":
 			reportLocation = GlobalParameters.BasePath();
@@ -184,7 +184,7 @@ public class ReportLibrary {
 			reportLocation = "C:\\Users\\" + System.getProperty("user.name") + "\\Desktop";
 			break;
 		default:
-			reportLocation = System.getProperty("user.dir");
+			// reportLocation = System.getProperty("user.dir");
 			break;
 		}
 		Date date = new Date();

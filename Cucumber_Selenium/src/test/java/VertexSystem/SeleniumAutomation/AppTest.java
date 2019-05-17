@@ -25,7 +25,7 @@ public class AppTest extends PageLocators implements LibraryInterface {
 
 	@BeforeClass
 	public static void Login() throws InterruptedException, InvalidFormatException, IOException {
-		excelData = FileLibrary.getExcelData("MasterExcel", "Sheet1", "1");
+		excelData = FileLibrary.getExcelData("MasterExcel", "Sheet1", "2");
 
 		pgLoc.loginPage("Username");
 
@@ -38,7 +38,7 @@ public class AppTest extends PageLocators implements LibraryInterface {
 				pgLoc.loginPage("Password"), excelData.get("Password"));
 
 		_webLibInterface.clickElement("Click on the button Login", pgLoc.loginPage("Submit"),
-				excelData.get("Clklogin"));// Clicklogin
+				excelData.get("Clklogin"));
 
 		_webLibInterface.waitForElementToBeClickable("xpath=//strong[contains(.,'11:00 pm')]");
 

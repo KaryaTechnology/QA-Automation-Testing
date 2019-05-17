@@ -4,7 +4,7 @@ import java.io.File;
 
 public class GlobalParameters {
 
-	public static String strSetReportLocation = "DESK";
+	public static String strSetReportLocation = "";
 	protected static boolean booHighliteFlag = true;
 	public static boolean boolScreenShortForEachStep = false;
 	public static String strChromeDriverLocation = "";
