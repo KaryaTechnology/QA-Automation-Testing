@@ -25,7 +25,7 @@ public class AppTest extends PageLocators implements LibraryInterface {
 
 	@BeforeClass
 	public static void Login() throws InterruptedException, InvalidFormatException, IOException {
-		excelData = FileLibrary.getExcelData("MasterExcel", "Sheet1", "2");
+		excelData = _fileLibInstance.getExcelData("MasterExcel", "Sheet1", "2");
 
 		pgLoc.loginPage("Username");
 

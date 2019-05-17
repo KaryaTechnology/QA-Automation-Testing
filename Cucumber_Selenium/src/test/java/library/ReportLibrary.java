@@ -203,6 +203,7 @@ public class ReportLibrary {
 		return reportLocation;
 	}
 
+	/** single **/
 	private ReportLibrary() {
 	}
 
@@ -211,5 +212,5 @@ public class ReportLibrary {
 			reportLibInstance = new ReportLibrary();
 		return reportLibInstance;
 	}
-
+	/** single **/
 }

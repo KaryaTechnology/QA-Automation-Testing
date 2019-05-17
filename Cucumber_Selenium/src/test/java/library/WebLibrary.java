@@ -326,11 +326,13 @@ public class WebLibrary implements LibraryInterface {
 		}
 	}
 
-	WebLibrary() {
-	}
-
+	// returns web driver
 	public WebDriver getWebDriver() {
 		return webDriver;
+	}
+
+	/** single **/
+	WebLibrary() {
 	}
 
 	public static WebLibrary getWebLibrary() {
@@ -339,6 +341,7 @@ public class WebLibrary implements LibraryInterface {
 		return webLibInstance;
 	}
 
+	/** single **/
 	public static void main(String[] args) {
 		getWebLibrary().endChromeDriver();
 	}

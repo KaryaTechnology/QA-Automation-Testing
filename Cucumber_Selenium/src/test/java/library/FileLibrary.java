@@ -1,4 +1,4 @@
-package VertexSystem.SeleniumAutomation;
+package library;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,21 +12,20 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.WebDriver;
 
 public class FileLibrary {
-	/*
-	 * public static void main(String []args) throws InvalidFormatException,
-	 * IOException { getExcelData("MasterExcel", "Sheet1", "1"); }
-	 */
-	public static String BasePath() throws IOException {
+
+	static FileLibrary fileLibInstance = null;
+
+	public String BasePath() throws IOException {
 		File Directory = new File(".");
 		String StrBasepath = Directory.getCanonicalPath();
-		// GlobalVariables.strBasepath = StrBasepath;
 		return StrBasepath;
 	}
 
-	public static LinkedHashMap<String, String> getExcelData(String strExcelName, String strSheetName,
-			String strTestCaseID) throws IOException, InvalidFormatException {
+	public LinkedHashMap<String, String> getExcelData(String strExcelName, String strSheetName, String strTestCaseID)
+			throws IOException, InvalidFormatException {
 
 		File DriverFile = null;
 		Workbook dataWorkbook = null;
@@ -35,7 +34,6 @@ public class FileLibrary {
 			DriverFile = new File(BasePath() + "\\TestData\\" + strExcelName + ".xlsx");
 			dataWorkbook = new XSSFWorkbook(DriverFile);
 		} catch (Exception e) {
-			// TODO: handle exception
 			DriverFile = new File(BasePath() + "\\TestData\\" + strExcelName + ".xls");
 			InputStream ExcelFileToRead = new FileInputStream(DriverFile);
 			;
@@ -78,4 +76,15 @@ public class FileLibrary {
 		// System.out.println("data sheet value"+testCaseHedderData);
 		return testCaseHedderData;
 	}
+
+	/** single **/
+	FileLibrary() {
+	}
+
+	public static FileLibrary getFileLibrary() {
+		if (fileLibInstance == null)
+			fileLibInstance = new FileLibrary();
+		return fileLibInstance;
+	}
+	/** single **/
 }
