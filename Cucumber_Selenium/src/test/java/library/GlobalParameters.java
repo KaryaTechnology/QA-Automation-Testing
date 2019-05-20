@@ -4,7 +4,7 @@ import java.io.File;
 
 public class GlobalParameters {
 
-	protected static String strSetReportLocation = "";
+	protected static String strSetReportLocation = "DEXK";
 	protected static boolean booHighliteFlag = true;
 	protected static boolean boolScreenShortForEachStep = false;
 	protected static String strChromeDriverLocation = "";
