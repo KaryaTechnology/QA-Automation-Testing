@@ -166,6 +166,16 @@ public class WebLibrary implements LibraryInterface {
 
 	}
 
+	public String getTextElement(String Locator) {
+		String text = getWebElement(Locator).getText();
+		if (text.isEmpty()) {
+			logReport("Expected Text to be returned", "Text not returned", "Fail", true);
+			return text;
+		} else
+			return text;
+	}
+
+	// Element is displayed or not
 	public boolean elementDisplayed(String xpathLocator) {
 		boolean status = false;
 		try {
@@ -219,7 +229,7 @@ public class WebLibrary implements LibraryInterface {
 
 				if (loadingStatus > 0) {
 					waitSeconds(2);
-					System.out.println("Page refresh in waitForStartPageLoading times" + i * 2 + "seconds");
+					System.out.println("Page loading times taken " + i * 2 + " seconds");
 				} else {
 					break;
 				}
@@ -302,8 +312,6 @@ public class WebLibrary implements LibraryInterface {
 		}
 	}
 
-	// close chrome driver
-
 	// end chrome driver
 	public void endChromeDriver() {
 
@@ -343,7 +351,8 @@ public class WebLibrary implements LibraryInterface {
 
 	/** single **/
 	public static void main(String[] args) {
-		getWebLibrary().endChromeDriver();
+		System.out.println(GlobalParameters.BasePath());
+		//getWebLibrary().endChromeDriver();
 	}
 
 }

@@ -20,25 +20,16 @@ import org.openqa.selenium.Keys;
 
 public class AppTest extends PageLocators implements LibraryInterface {
 
-	public static LinkedHashMap<String, String> excelData;
-	public static PageLocators pgLoc = new PageLocators();
-
 	@BeforeClass
 	public static void Login() throws InterruptedException, InvalidFormatException, IOException {
-		excelData = _fileLibInstance.getExcelData("MasterExcel", "Sheet1", "2");
-
-		pgLoc.loginPage("Username");
 
 		_webLibInterface.launchBrowser(excelData.get("URL"));
 
-		_webLibInterface.sendKeyToElement("Enter the value " + excelData.get("Username") + " in the field username",
-				pgLoc.loginPage("Username"), excelData.get("Username"));
+		_webLibInterface.sendKeyToElement("Field Username", pgLoc.loginPage("Username"), excelData.get("Username"));
 
-		_webLibInterface.sendKeyToElement("Enter the value " + excelData.get("Password") + " in the field username",
-				pgLoc.loginPage("Password"), excelData.get("Password"));
+		_webLibInterface.sendKeyToElement("Field Password", pgLoc.loginPage("Password"), excelData.get("Password"));
 
-		_webLibInterface.clickElement("Click on the button Login", pgLoc.loginPage("Submit"),
-				excelData.get("Clklogin"));
+		_webLibInterface.clickElement("Login button", pgLoc.loginPage("Submit"), excelData.get("Clklogin"));
 
 		_webLibInterface.waitForElementToBeClickable("xpath=//strong[contains(.,'11:00 pm')]");
 
@@ -82,8 +73,9 @@ public class AppTest extends PageLocators implements LibraryInterface {
 			String[] consumers = excelData.get("EntConsumer").trim().split(";");
 
 			for (String consumer : consumers) {
-				_webLibInterface.sendKeyToElement("Enter the consumer to be searched",
-						pgLoc.multiSesPro("ConsumerTxtBx"), consumer);
+				consumer = consumer.trim();
+				_webLibInterface.sendKeyToElement("Consumer Searched Box", pgLoc.multiSesPro("ConsumerTxtBx"),
+						consumer);
 
 				_webLibInterface.waitForPageLoad();
 
@@ -208,26 +200,26 @@ public class AppTest extends PageLocators implements LibraryInterface {
 
 			for (int i = 1; i <= DocReviewSize; i++) {
 				String TransStatus = _webLibInterface
-						.getWebElement(pgLoc.multiSesPro("TransStatus").replace("ROLNO", i + "")).getText();
+						.getTextElement(pgLoc.multiSesPro("TransStatus").replace("ORDER", i + ""));
 
 				if (TransStatus.equals("Not signed")) {
 
 					String SNcolor = _webLibInterface
-							.getWebElement(pgLoc.multiSesPro("SNLink").replace("ROLNO", i + "")).getCssValue("color");
+							.getWebElement(pgLoc.multiSesPro("SNLink").replace("ORDER", i + "")).getCssValue("color");
 					String Progresscolor = _webLibInterface
-							.getWebElement(pgLoc.multiSesPro("PLink").replace("ROLNO", i + "")).getCssValue("color");
+							.getWebElement(pgLoc.multiSesPro("PLink").replace("ORDER", i + "")).getCssValue("color");
 
 					String Supportcolor = _webLibInterface
-							.getWebElement(pgLoc.multiSesPro("SLink").replace("ROLNO", i + "")).getCssValue("color");
+							.getWebElement(pgLoc.multiSesPro("SLink").replace("ORDER", i + "")).getCssValue("color");
 
 					String SRcolor = _webLibInterface
-							.getWebElement(pgLoc.multiSesPro("SRLink").replace("ROLNO", i + "")).getCssValue("color");
+							.getWebElement(pgLoc.multiSesPro("SRLink").replace("ORDER", i + "")).getCssValue("color");
 
 					if (SNcolor.equals("rgba(0, 0, 0, 1)") && Progresscolor.equals("rgba(0, 0, 0, 1)")
 							&& Supportcolor.equals("rgba(0, 0, 0, 1)") && SRcolor.equals("rgba(35, 141, 18, 1)")) {
 
 						_webLibInterface.clickElement("Check box",
-								pgLoc.multiSesPro("DocRevCheckBox").replace("ROLNO", i + ""), "click");
+								pgLoc.multiSesPro("DocRevCheckBox").replace("ORDER", i + ""), "click");
 
 						SignConsumer();
 
@@ -259,4 +251,6 @@ public class AppTest extends PageLocators implements LibraryInterface {
 		_webLibInterface.endChromeDriver();
 	}
 
+	public static LinkedHashMap<String, String> excelData = _fileLibInstance.getExcelData("MasterExcel", "Sheet1", "1");
+	public static PageLocators pgLoc = new PageLocators();
 }

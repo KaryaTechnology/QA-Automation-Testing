@@ -4,16 +4,16 @@ import java.io.File;
 
 public class GlobalParameters {
 
-	public static String strSetReportLocation = "";
+	protected static String strSetReportLocation = "";
 	protected static boolean booHighliteFlag = true;
-	public static boolean boolScreenShortForEachStep = false;
-	public static String strChromeDriverLocation = "";
-	public static String strBasePath = "";
-	public static String strTestCaseId = "TestCaseID";
-	public static String strPageName = "";
-	public static String strModuleName = "";
+	protected static boolean boolScreenShortForEachStep = false;
+	protected static String strChromeDriverLocation = "";
+	protected static String strBasePath = "";
+	protected static String strTestCaseId = "TestCaseID";
+	protected static String strPageName = "";
+	protected static String strModuleName = "";
 
-	public static String BasePath() {
+	protected static String BasePath() {
 
 		String strBasepath = null;
 		try {

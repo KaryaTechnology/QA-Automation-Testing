@@ -2,6 +2,7 @@ package library;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
@@ -24,8 +25,7 @@ public class FileLibrary {
 		return StrBasepath;
 	}
 
-	public LinkedHashMap<String, String> getExcelData(String strExcelName, String strSheetName, String strTestCaseID)
-			throws IOException, InvalidFormatException {
+	public LinkedHashMap<String, String> getExcelData(String strExcelName, String strSheetName, String strTestCaseID) {
 
 		File DriverFile = null;
 		Workbook dataWorkbook = null;
@@ -33,11 +33,15 @@ public class FileLibrary {
 		try {
 			DriverFile = new File(BasePath() + "\\TestData\\" + strExcelName + ".xlsx");
 			dataWorkbook = new XSSFWorkbook(DriverFile);
-		} catch (Exception e) {
-			DriverFile = new File(BasePath() + "\\TestData\\" + strExcelName + ".xls");
-			InputStream ExcelFileToRead = new FileInputStream(DriverFile);
-			;
-			dataWorkbook = new HSSFWorkbook(ExcelFileToRead);
+		} catch (Exception e1) {
+			try {
+				DriverFile = new File(BasePath() + "\\TestData\\" + strExcelName + ".xls");
+				InputStream ExcelFileToRead = new FileInputStream(DriverFile);
+				;
+				dataWorkbook = new HSSFWorkbook(ExcelFileToRead);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		Sheet dataExcelSheet = dataWorkbook.getSheet(strSheetName);
@@ -72,7 +76,11 @@ public class FileLibrary {
 				break;
 			}
 		}
-		dataWorkbook.close();
+		try {
+			dataWorkbook.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		// System.out.println("data sheet value"+testCaseHedderData);
 		return testCaseHedderData;
 	}

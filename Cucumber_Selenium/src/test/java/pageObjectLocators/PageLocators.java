@@ -46,13 +46,13 @@ public class PageLocators {
 		Locator.put("ConsumerCard", "xpath=//a//div[text()='CONSUMER']");
 
 		Locator.put("DocRevSize", "xpath=//div[@data-ng-repeat='row in model']");
-		Locator.put("DocRevOrder", "xpath=//div[ROLNO][@data-ng-repeat='row in model']");
-		Locator.put("DocRevCheckBox", Locator.get("DocReviewSizeOrder") + "//div[@class='icon fa fa-lg fa-square-o']");
-		Locator.put("TransStatus", Locator.get("DocReviewSizeOrder") + "/div[9]//a");
-		Locator.put("SNLink", Locator.get("DocReviewSizeOrder") + "//div[text()='Service Note']");
-		Locator.put("PLink", Locator.get("DocReviewSizeOrder") + "//div[text()='Progress']");
-		Locator.put("SLink", Locator.get("DocReviewSizeOrder") + "//div[text()='Supports']");
-		Locator.put("SRLink", Locator.get("DocReviewSizeOrder") + "//div[text()='Service Record']");
+		Locator.put("DocRevOrder", "xpath=//div[ORDER][@data-ng-repeat='row in model']");
+		Locator.put("DocRevCheckBox", Locator.get("DocRevOrder") + "//div[@class='icon fa fa-lg fa-square-o']");
+		Locator.put("TransStatus", Locator.get("DocRevOrder") + "/div[9]//a");
+		Locator.put("SNLink", Locator.get("DocRevOrder") + "//div[text()='Service Note']");
+		Locator.put("PLink", Locator.get("DocRevOrder") + "//div[text()='Progress']");
+		Locator.put("SLink", Locator.get("DocRevOrder") + "//div[text()='Supports']");
+		Locator.put("SRLink", Locator.get("DocRevOrder") + "//div[text()='Service Record']");
 
 		return returnAndClear("multiSesPro", strLocatorName);
 
