@@ -40,7 +40,7 @@ public class ReportLibrary {
 		String report_location = reportLocation + "\\Vertex-Report_" + GlobalParameters.strTestCaseId + "_"
 				+ strTimeStamp + ".html";
 
-		System.out.println("Report File Location : " + report_location);
+		// System.out.println("Report File Location : " + report_location);
 
 		htmlReporter = new ExtentHtmlReporter(report_location);
 
@@ -184,7 +184,7 @@ public class ReportLibrary {
 			reportLocation = "C:\\Users\\" + System.getProperty("user.name") + "\\Desktop";
 			break;
 		default:
-			// reportLocation = System.getProperty("user.dir");
+			reportLocation = System.getProperty("user.dir");
 			break;
 		}
 		Date date = new Date();
@@ -192,7 +192,7 @@ public class ReportLibrary {
 		String strTimeStamp = dateFormat.format(date).toString();
 		reportLocation = reportLocation + "\\Test-Automation-Reports\\Report-Generated-On-" + strTimeStamp;
 
-		System.out.println("Report generated Location : " + reportLocation);
+		// System.out.println("Report generated Location : " + reportLocation);
 
 		// Check file location exist or not and creates file
 		File FileResultFolder = new File(reportLocation);
