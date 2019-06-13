@@ -1,8 +1,5 @@
 package VertexSystem.SeleniumAutomation;
 
-import library.LibraryInterface;
-import pageObjectLocators.PageLocators;
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -17,6 +14,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+
+import Library.LibraryInterface;
+import ObjectPageLocators.PageLocators;
 
 public class AppTest extends PageLocators implements LibraryInterface {
 

@@ -1,4 +1,4 @@
-package pageObjectLocators;
+package ObjectPageLocators;
 
 import java.util.HashMap;
 
