@@ -166,7 +166,7 @@ public class WebLibrary implements LibraryInterface {
 
 	}
 
-	public String getTextElement(String Locator) {
+	public String getElementText(String Locator) {
 		String text = getWebElement(Locator).getText();
 		if (text.isEmpty()) {
 			logReport("Expected Text to be returned", "Text not returned", "Fail", true);
@@ -351,8 +351,8 @@ public class WebLibrary implements LibraryInterface {
 
 	/** single **/
 	public static void main(String[] args) {
-		System.out.println(GlobalParameters.BasePath());
-		//getWebLibrary().endChromeDriver();
+		//System.out.println(GlobalParameters.BasePath());
+		getWebLibrary().endChromeDriver();
 	}
 
 }

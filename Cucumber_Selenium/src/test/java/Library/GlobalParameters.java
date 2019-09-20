@@ -1,19 +1,21 @@
 package Library;
 
 import java.io.File;
+import java.util.HashMap;
 
 public class GlobalParameters {
 
-	protected static String strSetReportLocation = "DESK";
-	protected static boolean booHighliteFlag = true;
-	protected static boolean boolScreenShortForEachStep = false;
-	protected static String strChromeDriverLocation = "";
-	protected static String strBasePath = "";
-	protected static String strTestCaseId = "TestCaseID";
-	protected static String strPageName = "";
-	protected static String strModuleName = "";
+	public static HashMap<String, String> globalValueDump = new HashMap<String, String>();
+	public static String strSetReportLocation = "DESK";
+	public static boolean booHighliteFlag = true;
+	public static boolean boolScreenShortForEachStep = false;
+	public static String strChromeDriverLocation = "";
+	public static String strBasePath = "";
+	public static String strTestCaseId = "TestCaseID";
+	public static String strPageName = "";
+	public static String strModuleName = "";
 
-	protected static String BasePath() {
+	public static String BasePath() {
 
 		String strBasepath = null;
 		try {

@@ -16,6 +16,7 @@ public class PageLocators {
 	public String myPage(String strLocatorName) {
 		Locator.put("NewSessionDrop", "xpath=//div[@title='New Service Session']/div/div[2]");
 		Locator.put("NewMultiConsumersSession", "id=buttons_buttonGroup_undefinedNew_Service_Session_Multi_Consumers");
+		Locator.put("MyPage", "xpath=//a[@title='My Page']");
 
 		return returnAndClear("myPage", strLocatorName);
 	}
@@ -37,6 +38,7 @@ public class PageLocators {
 		Locator.put("ActivituTxtBx", "id=serviceSessionServiceFk_relationship");
 		Locator.put("ActivituOpt", "xpath=//*[@id='serviceSessionServiceFk_element']//span[text()='ACTVOPT']");
 
+		Locator.put("DateTxtBx", "xpath=//div[@element='elementsByName.date']//input");
 		Locator.put("StartAtTxtBx", "id=startAt_time_attribute");
 		Locator.put("EndAtTxtBx", "id=endAt_time_attribute");
 
